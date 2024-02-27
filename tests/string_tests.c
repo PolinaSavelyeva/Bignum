@@ -5,7 +5,7 @@
 
 #define TEST_BIGNUM_EQ(str, val, len) bignum_t *bignum = init_bignum_mods(val, len); \
     mu_check(is_equal(bignum, to_bignum(str))); \
-    free_bignum(bignum); \
+    free_bignum(bignum) \
 
 MU_TEST(to_bignum_small_negative)
 {
