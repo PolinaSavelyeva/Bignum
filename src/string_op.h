@@ -3,6 +3,6 @@
 #define STRING_OP_H
 
 bignum_t *to_bignum(char *str);
-char *to_str(bignum_t *p_bignum);
+char *to_str(bignum_t *bignum);
 
 #endif /* STRING_OP_H */

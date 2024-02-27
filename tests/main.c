@@ -1,6 +1,6 @@
-#include <stdio.h>
+#include "tests.h"
 
 int main()
 {
-    return 0;
+    run_string_tests();
 }

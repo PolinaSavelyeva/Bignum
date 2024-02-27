@@ -4,12 +4,12 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-static bool parse_sign(char *str)
+static bool parse_ch_sign(char ch_sign)
 {
 
-    if (str == "-" || str == "+" || isdigit(str))
+    if (ch_sign == '-' || ch_sign == '+' || isdigit(ch_sign))
     {
-        return (str == "-");
+        return ch_sign == '-';
     }
     else
     {
@@ -20,25 +20,23 @@ static bool parse_sign(char *str)
 
 bignum_t *to_bignum(char *str)
 {
+    bignum_t *bignum = malloc(sizeof(bignum_t));
+    bignum->sign = parse_ch_sign(str[0]);
+    unsigned int fst_digit_index =  str[0] == '+' || str[0] == '-' ? 1 : 0;
+    bignum->length = strlen(str) - fst_digit_index;
 
-    bignum_t *bignum;
-    bool sign;
-    unsigned int length;
-
-    bignum = malloc(sizeof(bignum_t));
-    sign = parse_sign(str);
-    length = strlen(str);
-
-    if (length)
+    if (bignum->length)
     {
-        bignum->sign = sign;
-        bignum->length = length - sign;
+        unsigned int *digits = malloc(bignum->length * sizeof(unsigned int));
+        bignum->digits = digits;
 
-        for (int i = sign; i < length; i++)
+        for (int i = 0; i < bignum->length; i++)
         {
-            if (isdigit(str[i]))
+            unsigned int str_index = bignum->length - i - 1 + fst_digit_index;
+
+            if (isdigit(str[str_index]))
             {
-                bignum->digits[i] = str[i];
+                digits[i] = str[str_index] - '0';
             }
             else
             {
@@ -47,6 +45,31 @@ bignum_t *to_bignum(char *str)
             }
         }
     }
+    else
+    {
+        printf("Invalid input. String with non-zero length was expected");
+        abort();
+    }
 
     return bignum;
+}
+
+char *to_str(bignum_t *bignum)
+{
+    unsigned int fst_digit_index = bignum->sign;
+    char *str = malloc((bignum->length + 1 + fst_digit_index) * sizeof(char));
+
+    if (fst_digit_index)
+    {
+        str[0] = '-';
+    }
+
+    for (int i = fst_digit_index; i < bignum->length + fst_digit_index; i++)
+    {
+        str[i] = bignum->digits[bignum->length - i - 1 + fst_digit_index] + '0';
+    }
+
+    str[bignum->length + fst_digit_index] = '\0';
+
+    return str;
 }

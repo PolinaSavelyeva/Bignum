@@ -64,3 +64,6 @@ dkms.conf
 
 # Built Visual Studio Code Extensions
 *.vsix
+
+# Directory for temporary CMake files
+.tmp/*
