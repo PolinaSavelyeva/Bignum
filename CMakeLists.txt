@@ -8,22 +8,19 @@ set(SOURCE_LIB
     src/bignum.c
     src/math_op.c
     src/string_op.c
+    tests/helper.c
 )
-
-set(SOURCE_EXE src/main.c)
-
-set(TESTS
-    tests/main.c
-    tests/string_tests.c
-    src/string_op.c
-)
-
-include_directories(src)	
 
 add_library(bignum STATIC ${SOURCE_LIB})	
-add_executable(main ${SOURCE_EXE})
-target_link_libraries(main bignum)	
+target_include_directories(bignum PUBLIC src)
 
-add_executable(tests ${TESTS})
+add_executable(string_tests tests/string_tests.c)
+target_link_libraries(string_tests bignum)
+
+add_executable(math_tests tests/math_tests.c)
+target_link_libraries(math_tests bignum)
+
 enable_testing()
-add_test(NAME BignumTests COMMAND tests)
+
+add_test(NAME StringTests COMMAND string_tests)
+add_test(NAME MathTests COMMAND math_tests)

@@ -1,5 +1,4 @@
 #include "string_op.h"
-#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -13,8 +12,7 @@ static bool parse_ch_sign(char ch_sign)
     }
     else
     {
-        printf("Invalid input. Digit or '+', '-' were expected");
-        abort();
+        return NULL;
     }
 }
 
@@ -22,7 +20,7 @@ bignum_t *to_bignum(char *str)
 {
     bignum_t *bignum = malloc(sizeof(bignum_t));
     bignum->sign = parse_ch_sign(str[0]);
-    unsigned int fst_digit_index =  str[0] == '+' || str[0] == '-' ? 1 : 0;
+    unsigned int fst_digit_index = str[0] == '+' || str[0] == '-' ? 1 : 0;
     bignum->length = strlen(str) - fst_digit_index;
 
     if (bignum->length)
@@ -40,15 +38,13 @@ bignum_t *to_bignum(char *str)
             }
             else
             {
-                printf("Invalid input. String of digits was expected");
-                abort();
+                return NULL;
             }
         }
     }
     else
     {
-        printf("Invalid input. String with non-zero length was expected");
-        abort();
+        return NULL;
     }
 
     return bignum;
