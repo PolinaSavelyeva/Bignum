@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "string_op.h"
 
+// int -> bignum -> int
 #define FREE_ALL      \
     free_bignum(fst); \
     free_bignum(snd); \
@@ -28,7 +29,7 @@ MU_TEST(add_positive_same_length)
 }
 
 MU_TEST(add_negative)
-{ 
+{
     TEST_ADD_EQ(1, 5, 1, 4, "-13579");
 }
 

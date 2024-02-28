@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-bignum_t *init_bignum_mods(bool sign, unsigned int length)
+bignum_t *init_bignum_mods(sign_t sign, unsigned int length)
 {
     unsigned int *digits = malloc(length * sizeof(unsigned int));
     bignum_t *bignum = malloc(sizeof(bignum_t));
@@ -20,7 +20,7 @@ bignum_t *init_bignum_mods(bool sign, unsigned int length)
     return bignum;
 }
 
-bignum_t *init_bignum_digits(bool sign, unsigned int *digits, unsigned int length)
+bignum_t *init_bignum_digits(sign_t sign, unsigned int *digits, unsigned int length)
 {
     bignum_t *bignum = malloc(sizeof(bignum_t));
 

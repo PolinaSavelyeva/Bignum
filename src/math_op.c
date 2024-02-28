@@ -1,11 +1,13 @@
 #include "math_op.h"
 #include <stdlib.h>
 
+//сравнение
+
 bignum_t *add(bignum_t *fst, bignum_t *snd)
 {
     unsigned int length_max, length_min = 0;
     bignum_t *shorter, *longer = malloc(sizeof(bignum_t));
-    
+
     if (fst->length < snd->length)
     {
         length_max = snd->length;
@@ -22,11 +24,11 @@ bignum_t *add(bignum_t *fst, bignum_t *snd)
     }
 
     unsigned int *digits = malloc(length_max * sizeof(unsigned int));
-    unsigned int previous_digit = 0;
+    int previous_digit = 0;
 
     for (int i = 0; i < length_min; i++)
     {
-        unsigned int sum = fst->digits[i] + snd->digits[i] + previous_digit;
+        int sum = fst->digits[i] + snd->digits[i] + previous_digit;
         digits[i] = sum % 10;
         previous_digit = sum / 10;
     }
@@ -51,5 +53,6 @@ bignum_t *add(bignum_t *fst, bignum_t *snd)
     res->digits = digits;
 
     return res;
-    
 }
+
+// для умножения хватит n + m + 2 знаков
