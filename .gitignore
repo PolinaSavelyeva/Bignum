@@ -52,7 +52,7 @@ Mkfile.old
 dkms.conf
 
 # VsCode
-.vscode/*
+.vscode/
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
@@ -66,4 +66,4 @@ dkms.conf
 *.vsix
 
 # Directory for temporary CMake files
-.tmp/*
+build/
