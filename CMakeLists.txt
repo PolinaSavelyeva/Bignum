@@ -13,6 +13,10 @@ set(SOURCE_LIB
 add_library(bignum STATIC ${SOURCE_LIB})	
 target_include_directories(bignum PUBLIC src)
 
+# Add compiler flags
+target_compile_options(bignum PRIVATE -Wall -g)
+
+# Executable tests
 add_executable(string_tests tests/string_tests.c)
 target_link_libraries(string_tests bignum)
 
@@ -24,6 +28,7 @@ enable_testing()
 add_test(NAME StringTests COMMAND string_tests)
 add_test(NAME MathTests COMMAND math_tests)
 
+# Group files to format
 file(GLOB_RECURSE ALL_SOURCE_FILES *.c *.h)
 foreach (SOURCE_FILE ${ALL_SOURCE_FILES})
     string(FIND SOURCE_FILE PROJECT_TRDPARTY_DIR PROJECT_TRDPARTY_DIR_FOUND)
@@ -32,4 +37,10 @@ foreach (SOURCE_FILE ${ALL_SOURCE_FILES})
     endif ()
 endforeach ()
 
-add_custom_target (format COMMAND clang-format -style=LLVM -i ${ALL_SOURCE_FILES})
+# Formatter
+add_custom_target (format
+     COMMAND clang-format -style=Google -i ${ALL_SOURCE_FILES})
+
+# Memcheck
+add_custom_target(memcheck 
+    COMMAND valgrind --leak-check=full --verbose ./string_tests)
