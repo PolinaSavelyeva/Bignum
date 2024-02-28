@@ -1,20 +1,21 @@
+#include <stdlib.h>
+
 #include "helper.h"
 #include "math_op.h"
 #include "minunit.h"
 #include "string_op.h"
-#include <stdlib.h>
 
 // int -> bignum -> int
-#define FREE_ALL                                                               \
-  free_bignum(fst);                                                            \
-  free_bignum(snd);                                                            \
+#define FREE_ALL    \
+  free_bignum(fst); \
+  free_bignum(snd); \
   free_bignum(res)
 
-#define TEST_ADD_EQ(sign_fst, length_fst, sign_snd, length_snd, ans_str)       \
-  bignum_t *fst = init_bignum_mods(sign_fst, length_fst);                      \
-  bignum_t *snd = init_bignum_mods(sign_snd, length_snd);                      \
-  bignum_t *res = to_bignum(ans_str);                                          \
-  mu_check(is_equal(add(fst, snd), res));                                      \
+#define TEST_ADD_EQ(sign_fst, length_fst, sign_snd, length_snd, ans_str) \
+  bignum_t *fst = init_bignum_mods(sign_fst, length_fst);                \
+  bignum_t *snd = init_bignum_mods(sign_snd, length_snd);                \
+  bignum_t *res = to_bignum(ans_str);                                    \
+  mu_check(is_equal(add(fst, snd), res));                                \
   FREE_ALL
 
 MU_TEST(add_negative_same_length) { TEST_ADD_EQ(1, 5, 1, 5, "-24690"); }

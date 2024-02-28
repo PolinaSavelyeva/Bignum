@@ -1,4 +1,5 @@
 #include "string_op.h"
+
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
@@ -53,8 +54,7 @@ bignum_t *to_bignum(char *str) {
 
 char *to_str(bignum_t *bignum) {
   if (bignum->sign) {
-    if (!bignum->length)
-      return NULL;
+    if (!bignum->length) return NULL;
 
     unsigned int fst_digit_i = bignum->sign == NEG;
     char *str = malloc((bignum->length + 1 + fst_digit_i) * sizeof(char));

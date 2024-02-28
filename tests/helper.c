@@ -1,7 +1,9 @@
 #include "helper.h"
-#include "bignum.h"
+
 #include <stdlib.h>
 #include <string.h>
+
+#include "bignum.h"
 
 bignum_t *init_bignum_mods(sign_t sign, unsigned int length) {
   unsigned int *digits = malloc(length * sizeof(unsigned int));

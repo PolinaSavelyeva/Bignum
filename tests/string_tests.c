@@ -1,13 +1,14 @@
+#include <stdlib.h>
+
 #include "helper.h"
 #include "minunit.h"
 #include "string_op.h"
-#include <stdlib.h>
 
-#define TEST_BIGNUM_EQ(str, val, len)                                          \
-  bignum_t *bignum_fst = init_bignum_mods(val, len);                           \
-  bignum_t *bignum_snd = to_bignum(str);                                       \
-  mu_check(is_equal(bignum_fst, bignum_snd));                                  \
-  free_bignum(bignum_fst);                                                     \
+#define TEST_BIGNUM_EQ(str, val, len)                \
+  bignum_t *bignum_fst = init_bignum_mods(val, len); \
+  bignum_t *bignum_snd = to_bignum(str);             \
+  mu_check(is_equal(bignum_fst, bignum_snd));        \
+  free_bignum(bignum_fst);                           \
   free_bignum(bignum_snd);
 
 #define TEST_BIGNUM_FAIL(str, val, len) mu_check(NULL == to_bignum(str))
@@ -56,11 +57,11 @@ MU_TEST_SUITE(to_bignum_tests) {
   MU_RUN_TEST(to_bignum_one_alpha);
 }
 
-#define TEST_STR_EQ(str_fst, val, len)                                         \
-  bignum_t *bignum = init_bignum_mods(val, len);                               \
-  char *str_snd = to_str(bignum);                                              \
-  mu_assert_string_eq(str_fst, str_snd);                                       \
-  free_bignum(bignum);                                                         \
+#define TEST_STR_EQ(str_fst, val, len)           \
+  bignum_t *bignum = init_bignum_mods(val, len); \
+  char *str_snd = to_str(bignum);                \
+  mu_assert_string_eq(str_fst, str_snd);         \
+  free_bignum(bignum);                           \
   free(str_snd)
 
 #define TEST_STR_FAIL(str, val, len) mu_check(NULL == to_bignum(str))
