@@ -4,7 +4,6 @@ project(Bignum)
 set(CMAKE_C_STANDARD 11)
 
 set(SOURCE_LIB 
-    src/basic_op.c
     src/bignum.c
     src/math_op.c
     src/string_op.c
@@ -24,3 +23,13 @@ enable_testing()
 
 add_test(NAME StringTests COMMAND string_tests)
 add_test(NAME MathTests COMMAND math_tests)
+
+file(GLOB_RECURSE ALL_SOURCE_FILES *.c *.h)
+foreach (SOURCE_FILE ${ALL_SOURCE_FILES})
+    string(FIND SOURCE_FILE PROJECT_TRDPARTY_DIR PROJECT_TRDPARTY_DIR_FOUND)
+    if (NOT ${PROJECT_TRDPARTY_DIR_FOUND} EQUAL -1)
+        list(REMOVE_ITEM ALL_SOURCE_FILES ${SOURCE_FILE})
+    endif ()
+endforeach ()
+
+add_custom_target (format COMMAND clang-format -style=LLVM -i ${ALL_SOURCE_FILES})
