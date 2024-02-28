@@ -7,5 +7,6 @@ bool is_equal(bignum_t *bignum_fst, bignum_t *bignum_snd);
 void free_bignum(bignum_t *bignum);
 bignum_t *init_bignum_digits(sign_t sign, unsigned int *digits,
                              unsigned int length);
+bignum_t *init_bignum_int(int num);
 
 #endif

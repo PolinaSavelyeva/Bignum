@@ -35,6 +35,15 @@ MU_TEST(to_bignum_begin_zero) { TEST_BIGNUM_FAIL("+0001234567", POS, 7); }
 
 MU_TEST(to_bignum_one) { TEST_BIGNUM_EQ("1", POS, 1); }
 
+MU_TEST(to_bignum_one_int) {
+  bignum_t *bignum_fst = init_bignum_int(1);
+  bignum_t *bignum_snd = to_bignum("1");
+
+  mu_check(is_equal(bignum_fst, bignum_snd));
+  free_bignum(bignum_fst);
+  free_bignum(bignum_snd);
+}
+
 MU_TEST(to_bignum_non_digit) { mu_check(to_bignum("+abc") == NULL); }
 
 MU_TEST(to_bignum_one_alpha) {
@@ -55,6 +64,7 @@ MU_TEST_SUITE(to_bignum_tests) {
   MU_RUN_TEST(to_bignum_one);
   MU_RUN_TEST(to_bignum_non_digit);
   MU_RUN_TEST(to_bignum_one_alpha);
+  MU_RUN_TEST(to_bignum_one_int);
 }
 
 #define TEST_STR_EQ(str_fst, val, len)           \

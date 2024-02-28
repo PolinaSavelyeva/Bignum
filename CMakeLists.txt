@@ -12,6 +12,7 @@ set(SOURCE_LIB
 
 add_library(bignum STATIC ${SOURCE_LIB})	
 target_include_directories(bignum PUBLIC src)
+target_link_libraries(bignum m)
 
 # Add compiler flags
 target_compile_options(bignum PRIVATE -Wall -g)
