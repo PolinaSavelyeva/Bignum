@@ -220,4 +220,28 @@ add (bignum_t *fst, bignum_t *snd)
   return res;
 }
 
+bignum_t *
+diff (bignum_t *fst, bignum_t *snd)
+{
+  bignum_t *op_snd = malloc(sizeof(bignum_t));
+  if (snd->sign) 
+  {
+    op_snd->sign = snd->sign * NEG;
+    op_snd->digits = snd->digits;
+    op_snd->length = snd->length;
+
+    bignum_t *ans = add (fst, op_snd);
+    free(op_snd);
+    return ans;
+  }
+  else if(!snd->length)
+  {
+    return fst;
+  }
+  else
+  {
+    return 0;
+  }
+}
+
 // для умножения хватит n + m + 2 знаков
