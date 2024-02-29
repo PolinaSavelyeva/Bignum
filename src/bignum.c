@@ -2,7 +2,9 @@
 
 #include <stdlib.h>
 
-void free_bignum(bignum_t *bignum) {
-  free(bignum->digits);
-  free(bignum);
+void
+free_bignum (bignum_t *bignum)
+{
+  free (bignum->digits);
+  free (bignum);
 }

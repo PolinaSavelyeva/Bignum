@@ -40,8 +40,8 @@ endforeach ()
 
 # Formatter
 add_custom_target (format
-     COMMAND clang-format -style=Google -i ${ALL_SOURCE_FILES})
+     COMMAND clang-format -style=GNU -i ${ALL_SOURCE_FILES})
 
 # Memcheck
 add_custom_target(memcheck 
-    COMMAND valgrind --leak-check=full --verbose ./string_tests)
+    COMMAND valgrind --leak-check=full --verbose ./math_tests)
