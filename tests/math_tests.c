@@ -5,18 +5,19 @@
 #include "minunit.h"
 #include "string_op.h"
 
-#define TEST_ADD_STR_EQ(sign_fst, len_fst, sign_snd, len_snd, str) \
-mu_check(test_op_res_eq_str(add, sign_fst, len_fst, sign_snd, len_snd, str))
+#define TEST_ADD_STR_EQ(sign_fst, len_fst, sign_snd, len_snd, str)            \
+  mu_check (                                                                  \
+      test_op_res_eq_str (add, sign_fst, len_fst, sign_snd, len_snd, str))
 
-#define TEST_ADD_INTS_EQ(i_fst, i_snd, i_ans) \
-mu_check(test_op_res_eq_int(add, i_fst, i_snd, i_ans))
+#define TEST_ADD_INTS_EQ(i_fst, i_snd, i_ans)                                 \
+  mu_check (test_op_res_eq_int (add, i_fst, i_snd, i_ans))
 
-#define TEST_DIFF_STR_EQ(sign_fst, len_fst, sign_snd, len_snd, str)\
-mu_check(test_op_res_eq_str(diff, sign_fst, len_fst, sign_snd, len_snd, str))
+#define TEST_DIFF_STR_EQ(sign_fst, len_fst, sign_snd, len_snd, str)           \
+  mu_check (                                                                  \
+      test_op_res_eq_str (diff, sign_fst, len_fst, sign_snd, len_snd, str))
 
-#define TEST_DIFF_INT_EQ(i_fst, i_snd, i_ans) \
-mu_check(test_op_res_eq_int(diff, i_fst, i_snd, i_ans))
-
+#define TEST_DIFF_INT_EQ(i_fst, i_snd, i_ans)                                 \
+  mu_check (test_op_res_eq_int (diff, i_fst, i_snd, i_ans))
 
 MU_TEST (add_eq_neg) { TEST_ADD_STR_EQ (NEG, 5, NEG, 5, "-24690"); }
 
@@ -61,7 +62,10 @@ MU_TEST (diff_eq_pos) { TEST_DIFF_STR_EQ (POS, 1, POS, 1, "0"); }
 
 MU_TEST (diff_neg_dif_len) { TEST_DIFF_STR_EQ (NEG, 5, NEG, 4, "-11111"); }
 
-MU_TEST (diff_pos_dif_len) { TEST_DIFF_STR_EQ (POS, 3, POS, 11, "-12345678778"); }
+MU_TEST (diff_pos_dif_len)
+{
+  TEST_DIFF_STR_EQ (POS, 3, POS, 11, "-12345678778");
+}
 
 MU_TEST (diff_eq_pos_neg) { TEST_DIFF_INT_EQ (2, -2, 4); }
 
