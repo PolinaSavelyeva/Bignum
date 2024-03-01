@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include "helper.h"
+#include "utils.h"
 #include "minunit.h"
 #include "string_op.h"
 

@@ -18,4 +18,6 @@ typedef struct
 
 void free_bignum (bignum_t *bignum);
 
+void *cut_zeros (bignum_t *bignum);
+
 #endif /* BIGNUM_H */

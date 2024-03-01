@@ -7,7 +7,7 @@ set(SOURCE_LIB
     src/bignum.c
     src/math_op.c
     src/string_op.c
-    tests/helper.c
+    tests/utils.c
 )
 
 add_library(bignum STATIC ${SOURCE_LIB})	
