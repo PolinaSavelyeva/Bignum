@@ -19,6 +19,9 @@
 #define TEST_DIFF_INT_EQ(i_fst, i_snd, i_ans)                                 \
   mu_check (test_op_res_eq_int (diff, i_fst, i_snd, i_ans))
 
+#define TEST_MULT_INT_EQ(i_fst, i_snd, i_ans)                                 \
+  mu_check (test_op_res_eq_int (mult, i_fst, i_snd, i_ans))
+
 MU_TEST (add_eq_neg) { TEST_ADD_STR_EQ (NEG, 5, NEG, 5, "-24690"); }
 
 MU_TEST (add_eq_pos) { TEST_ADD_STR_EQ (POS, 1, POS, 1, "2"); }
@@ -93,10 +96,37 @@ MU_TEST_SUITE (diff_tests)
   MU_RUN_TEST (diff_with_realloc);
 }
 
+MU_TEST (mult_one_digit_neg) { TEST_MULT_INT_EQ (-5, -5, 25); }
+
+MU_TEST (mult_one_digit_pos) { TEST_MULT_INT_EQ (1, 1, 1); }
+
+MU_TEST (mult_one_digit_pos_neg) { TEST_MULT_INT_EQ (7, -7, -49); }
+
+MU_TEST (mult_zero_pos) { TEST_MULT_INT_EQ (0, 726, 0); }
+
+MU_TEST (mult_zero_neg) { TEST_MULT_INT_EQ (0, -929, 0); }
+
+MU_TEST (mult_pos_neg) { TEST_MULT_INT_EQ (-127, 61, -7747); }
+
+MU_TEST (mult_neg_neg) { TEST_MULT_INT_EQ (-1278, -74, 94572); }
+
+MU_TEST_SUITE (mult_tests)
+{
+  MU_RUN_TEST (mult_one_digit_neg);
+  MU_RUN_TEST (mult_one_digit_pos);
+  MU_RUN_TEST (mult_one_digit_pos_neg);
+  MU_RUN_TEST (mult_zero_pos);
+  MU_RUN_TEST (mult_zero_neg);
+  MU_RUN_TEST (mult_pos_neg);
+  MU_RUN_TEST (mult_neg_neg);
+}
+
 int
 main ()
 {
+  MU_RUN_SUITE (add_tests);
   MU_RUN_SUITE (diff_tests);
+  MU_RUN_SUITE (mult_tests);
   MU_REPORT ();
   return MU_EXIT_CODE;
 }

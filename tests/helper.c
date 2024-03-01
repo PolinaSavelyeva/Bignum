@@ -42,7 +42,7 @@ init_bignum_int (int num)
 {
   bignum_t *bignum = malloc (sizeof (bignum_t));
   bignum->sign = (num > 0) - (num < 0);
-  bignum->length = num ? (unsigned int)log10 (num) + 1 : 0;
+  bignum->length = num ? (unsigned int)log10 (abs (num)) + 1 : 0;
   unsigned int *digits = malloc (bignum->length * sizeof (unsigned int));
   bignum->digits = digits;
   num = abs (num);

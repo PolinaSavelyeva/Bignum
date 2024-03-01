@@ -1,98 +1,7 @@
 #include "math_op.h"
 
+#include <stdio.h>
 #include <stdlib.h>
-
-#if 0
-static void
-compare (bignum_t *fst, bignum_t *snd, bignum_t *big, bignum_t *small)
-{
-  if (fst->sign > snd->sign)
-    {
-      big = fst;
-      small = snd;
-      return;
-    }
-  else if (fst->sign == snd->sign)
-    {
-      if (fst->length > snd->length)
-        {
-          if (fst->sign != NEG)
-            {
-              big = fst;
-              small = snd;
-              return;
-            }
-          else
-            {
-              big = snd;
-              small = fst;
-              return;
-            }
-        }
-      else if (fst->length == snd->length)
-        {
-          for (int i = 0; i < fst->length; i++)
-            {
-              if (fst->digits[i] == snd->digits[i])
-                {
-                  continue;
-                }
-              else if (fst->digits[i] > snd->digits[i])
-                {
-                  if (fst->sign != NEG)
-                    {
-                      big = fst;
-                      small = snd;
-                      return;
-                    }
-                  else
-                    {
-                      big = snd;
-                      small = fst;
-                      return;
-                    }
-                }
-              else
-                {
-                  if (fst->sign != NEG)
-                    {
-                      big = snd;
-                      small = fst;
-                      return;
-                    }
-                  else
-                    {
-                      big = fst;
-                      small = snd;
-                      return;
-                    }
-                }
-              big = fst;
-              small = snd;
-              return;
-            }
-        }
-      else if (fst->sign != NEG)
-        {
-          big = snd;
-          small = fst;
-          return;
-        }
-      else
-        {
-          big = fst;
-          small = snd;
-          return;
-        }
-    }
-  else
-    {
-      big = snd;
-      small = fst;
-      return;
-    }
-}
-#endif
 
 static void
 abs_compare (bignum_t *fst, bignum_t *snd, bignum_t **big, bignum_t **small)
@@ -105,7 +14,7 @@ abs_compare (bignum_t *fst, bignum_t *snd, bignum_t **big, bignum_t **small)
     }
   else if (fst->length == snd->length)
     {
-      for (int i = 0; i < fst->length; i++)
+      for (int i = fst->length - 1; i >= 0; i--)
         {
           if (fst->digits[i] == snd->digits[i])
             {
@@ -203,28 +112,28 @@ add (bignum_t *fst, bignum_t *snd)
   unsigned int *res_digits = calloc (res_len, sizeof (unsigned int));
   res->digits = res_digits;
 
-  int prev_sum = 0;
+  int carry = 0;
   for (int i = 0; i < (*small)->length; i++)
     {
       int cur_sum = (*big)->digits[i]
                     + (*big)->sign * (*small)->sign * (*small)->digits[i]
-                    + prev_sum;
+                    + carry;
 
       res_digits[i] = math_mod_ten (cur_sum);
-      prev_sum = math_div_ten (cur_sum);
+      carry = math_div_ten (cur_sum);
     }
 
   for (int i = (*small)->length; i < (*big)->length; i++)
     {
-      int cur_sum = (*big)->digits[i] + prev_sum;
+      int cur_sum = (*big)->digits[i] + carry;
       res_digits[i] = math_mod_ten (cur_sum);
-      prev_sum = math_div_ten (cur_sum);
+      carry = math_div_ten (cur_sum);
     }
 
   free (big);
   free (small);
 
-  res_digits[res_len - 1] = res->sign * prev_sum;
+  res_digits[res_len - 1] = res->sign * carry;
 
   if (!cut_zeros (res))
     return NULL;
@@ -234,15 +143,43 @@ add (bignum_t *fst, bignum_t *snd)
 bignum_t *
 diff (bignum_t *fst, bignum_t *snd)
 {
-  bignum_t *op_snd = malloc (sizeof (bignum_t));
+  bignum_t *op_sign_snd = malloc (sizeof (bignum_t));
 
-  op_snd->sign = snd->sign * NEG;
-  op_snd->digits = snd->digits;
-  op_snd->length = snd->length;
+  op_sign_snd->sign = snd->sign * NEG;
+  op_sign_snd->digits = snd->digits;
+  op_sign_snd->length = snd->length;
 
-  bignum_t *ans = add (fst, op_snd);
-  free (op_snd);
+  bignum_t *ans = add (fst, op_sign_snd);
+  free (op_sign_snd);
   return ans;
 }
 
-// для умножения хватит n + m + 2 знаков
+bignum_t *
+mult (bignum_t *fst, bignum_t *snd)
+{
+
+  bignum_t *res = malloc (sizeof (bignum_t));
+  unsigned int res_len = fst->length + snd->length + 2;
+  unsigned int *res_digits = calloc (res_len, sizeof (unsigned int));
+
+  res->sign = fst->sign * snd->sign;
+  res->length = res_len;
+  res->digits = res_digits;
+
+  for (int i = 0; i < fst->length; i++)
+    {
+      unsigned int carry = 0;
+      for (int j = 0; j < snd->length; j++)
+        {
+          unsigned int sum
+              = fst->digits[i] * snd->digits[j] + res_digits[i + j] + carry;
+          res_digits[i + j] = sum % 10;
+          carry = sum / 10;
+        }
+      res_digits[i + snd->length] = carry;
+    }
+
+  cut_zeros (res);
+
+  return res;
+}
