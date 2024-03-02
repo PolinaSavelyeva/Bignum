@@ -1,4 +1,3 @@
-#include <stdbool.h>
 #ifndef BIGNUM_H
 #define BIGNUM_H
 
@@ -19,5 +18,7 @@ typedef struct
 void free_bignum (bignum_t *bignum);
 
 void *cut_zeros (bignum_t *bignum);
+
+bignum_t *init_bignum_from_int (int num);
 
 #endif /* BIGNUM_H */

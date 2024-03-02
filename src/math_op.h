@@ -1,8 +1,9 @@
 #include "bignum.h"
+#include <stdbool.h>
 #ifndef MATH_OP_H
 #define MATH_OP_H
 
-static void abs_compare (bignum_t *fst, bignum_t *snd, bignum_t **big, bignum_t **small);
+bool abs_is_greater_or_eq (bignum_t *fst, bignum_t *snd);
 
 bignum_t *add (bignum_t *fst, bignum_t *snd);
 

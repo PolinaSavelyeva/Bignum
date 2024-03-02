@@ -1,8 +1,8 @@
 #include <stdlib.h>
 
-#include "utils.h"
 #include "minunit.h"
 #include "string_op.h"
+#include "utils.h"
 
 #define TEST_BIGNUM_EQ(str, val, len)                                         \
   bignum_t *bignum_fst = init_bignum_mods (val, len);                         \
@@ -37,7 +37,7 @@ MU_TEST (to_bignum_one) { TEST_BIGNUM_EQ ("1", POS, 1); }
 
 MU_TEST (to_bignum_one_int)
 {
-  bignum_t *bignum_fst = init_bignum_int (1);
+  bignum_t *bignum_fst = init_bignum_from_int (1);
   bignum_t *bignum_snd = to_bignum ("1");
 
   mu_check (is_equal (bignum_fst, bignum_snd));

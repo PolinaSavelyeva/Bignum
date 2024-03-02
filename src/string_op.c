@@ -1,6 +1,7 @@
 #include "string_op.h"
 
 #include <ctype.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -43,16 +44,15 @@ to_bignum (char *str)
 
   if ((bignum->length && str[1] != '0') || (!bignum->sign && !bignum->length))
     {
-      unsigned int *digits = malloc (bignum->length * sizeof (unsigned int));
-      bignum->digits = digits;
+      bignum->digits = malloc (bignum->length * sizeof (unsigned int));
 
-      for (int i = 0; i < bignum->length; i++)
+      for (unsigned int i = 0; i < bignum->length; i++)
         {
           unsigned int str_i = bignum->length - i - 1 + fst_digit_i;
 
           if (isdigit (str[str_i]))
             {
-              digits[i] = str[str_i] - '0';
+              bignum->digits[i] = str[str_i] - '0';
             }
           else
             {
@@ -85,7 +85,7 @@ to_str (bignum_t *bignum)
           str[0] = '-';
         }
 
-      for (int i = fst_digit_i; i < bignum->length + fst_digit_i; i++)
+      for (unsigned int i = fst_digit_i; i < bignum->length + fst_digit_i; i++)
         {
           str[i] = bignum->digits[bignum->length - i - 1 + fst_digit_i] + '0';
         }

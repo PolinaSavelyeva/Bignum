@@ -1,5 +1,6 @@
 #include "bignum.h"
 
+#include <math.h>
 #include <stdlib.h>
 
 void
@@ -43,5 +44,24 @@ cut_zeros (bignum_t *bignum)
           bignum->sign = ZERO;
         }
     }
+  return bignum;
+}
+
+bignum_t *
+init_bignum_from_int (int num)
+{
+  bignum_t *bignum = malloc (sizeof (bignum_t));
+  bignum->sign = (num > 0) - (num < 0);
+  bignum->length = num ? (unsigned int)log10 (abs (num)) + 1 : 0;
+  unsigned int *digits = malloc (bignum->length * sizeof (unsigned int));
+  bignum->digits = digits;
+  num = abs (num);
+
+  for (int i = 0; i < bignum->length; i++)
+    {
+      bignum->digits[i] = num % 10;
+      num /= 10;
+    }
+
   return bignum;
 }

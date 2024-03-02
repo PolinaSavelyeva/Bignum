@@ -2,47 +2,26 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-static void
-abs_compare (bignum_t *fst, bignum_t *snd, bignum_t **big, bignum_t **small)
+bool
+abs_is_greater_or_eq (bignum_t *fst, bignum_t *snd)
 {
-  if (fst->length > snd->length)
+  if (fst->length == snd->length)
     {
-      *big = fst;
-      *small = snd;
-      return;
-    }
-  else if (fst->length == snd->length)
-    {
-      for (int i = fst->length - 1; i >= 0; i--)
+      for (unsigned int i = 0; i < fst->length; i++)
         {
-          if (fst->digits[i] == snd->digits[i])
-            {
-              continue;
-            }
-          else if (fst->digits[i] > snd->digits[i])
-            {
-              *big = fst;
-              *small = snd;
-              return;
-            }
-          else
-            {
-              *big = snd;
-              *small = fst;
-              return;
-            }
+          if (fst->digits[fst->length - 1 - i]
+              == snd->digits[fst->length - 1 - i])
+            continue;
+          return (fst->digits[fst->length - 1 - i]
+                  > snd->digits[fst->length - 1 - i]);
         }
-      *big = fst;
-      *small = snd;
-      return;
     }
-  else
-    {
-      *big = snd;
-      *small = fst;
-      return;
-    }
+  else if (fst->length < snd->length)
+    return 0;
+
+  return 1;
 }
 
 static int
@@ -62,44 +41,33 @@ math_mod_ten (int num)
 bignum_t *
 add (bignum_t *fst, bignum_t *snd)
 {
+
+  if (!abs_is_greater_or_eq (fst, snd))
+    return add (snd, fst);
+
   bignum_t *res = malloc (sizeof (bignum_t));
-  bignum_t **big = malloc (sizeof (bignum_t *));
-  bignum_t **small = malloc (sizeof (bignum_t *));
 
-  abs_compare (fst, snd, big, small);
-
-  unsigned int res_len = (*big)->length + 1;
-  res->length = res_len;
-  res->sign = (*big)->sign;
-
-  unsigned int *res_digits = calloc (res_len, sizeof (unsigned int));
-  res->digits = res_digits;
+  res->length = fst->length + 1;
+  res->sign = fst->sign;
+  res->digits = calloc (res->length, sizeof (unsigned int));
 
   int carry = 0;
-  for (int i = 0; i < (*small)->length; i++)
-    {
-      int cur_sum = (*big)->digits[i]
-                    + (*big)->sign * (*small)->sign * (*small)->digits[i]
-                    + carry;
 
-      res_digits[i] = math_mod_ten (cur_sum);
+  for (unsigned int i = 0; i < fst->length; i++)
+    {
+      int cur_sum = fst->digits[i] + carry;
+
+      if (i < snd->length)
+        cur_sum += fst->sign * snd->sign * snd->digits[i];
+
+      res->digits[i] = math_mod_ten (cur_sum);
       carry = math_div_ten (cur_sum);
     }
 
-  for (int i = (*small)->length; i < (*big)->length; i++)
-    {
-      int cur_sum = (*big)->digits[i] + carry;
-      res_digits[i] = math_mod_ten (cur_sum);
-      carry = math_div_ten (cur_sum);
-    }
-
-  free (big);
-  free (small);
-
-  res_digits[res_len - 1] = res->sign * carry;
-
+  res->digits[res->length - 1] = res->sign * carry;
   if (!cut_zeros (res))
     return NULL;
+
   return res;
 }
 
@@ -114,37 +82,138 @@ diff (bignum_t *fst, bignum_t *snd)
 
   bignum_t *ans = add (fst, op_sign_snd);
   free (op_sign_snd);
+
   return ans;
 }
 
 bignum_t *
 mult (bignum_t *fst, bignum_t *snd)
 {
-
   bignum_t *res = malloc (sizeof (bignum_t));
-  unsigned int res_len = fst->length + snd->length + 2;
-  unsigned int *res_digits = calloc (res_len, sizeof (unsigned int));
 
+  res->length = fst->length + snd->length;
   res->sign = fst->sign * snd->sign;
-  res->length = res_len;
-  res->digits = res_digits;
+  res->digits = calloc (res->length, sizeof (unsigned int));
 
-  for (int i = 0; i < fst->length; i++)
+  for (unsigned int i = 0; i < fst->length; i++)
     {
       unsigned int carry = 0;
-      for (int j = 0; j < snd->length; j++)
+      for (unsigned int j = 0; j < snd->length; j++)
         {
           unsigned int sum
-              = fst->digits[i] * snd->digits[j] + res_digits[i + j] + carry;
-          res_digits[i + j] = sum % 10;
+              = fst->digits[i] * snd->digits[j] + res->digits[i + j] + carry;
+          res->digits[i + j] = sum % 10;
           carry = sum / 10;
         }
-      res_digits[i + snd->length] = carry;
+      res->digits[i + snd->length] = carry;
     }
+
+  if (!cut_zeros (res))
+    return NULL;
+
+  return res;
+}
+
+static int
+find_cur_quotient (bignum_t *cur_dividend, bignum_t *snd)
+{
+
+  int i_quotient = 0;
+  bignum_t *tmp_mult, *bignum_quotient;
+
+  for (; i_quotient < 10; i_quotient++)
+    {
+      bignum_quotient = init_bignum_from_int (i_quotient);
+      tmp_mult = mult (snd, bignum_quotient);
+
+      bool is_break = !abs_is_greater_or_eq (cur_dividend, tmp_mult);
+
+      free_bignum (tmp_mult);
+      free_bignum (bignum_quotient);
+
+      if (is_break)
+        break;
+    }
+  return i_quotient - 1;
+}
+
+bignum_t *
+divide (bignum_t *fst, bignum_t *snd)
+{
+
+  if (!snd->length && !snd->sign && !snd->digits)
+    return NULL;
+
+  bignum_t *res = malloc (sizeof (bignum_t));
+  res->digits = calloc (fst->length, sizeof (unsigned int));
+  res->sign = fst->sign * snd->sign;
+  res->length = fst->length;
+
+  bignum_t *cur_dividend = malloc (sizeof (bignum_t));
+
+  cur_dividend->length = 0;
+  cur_dividend->digits = NULL;
+
+  for (unsigned int i = 0; i < fst->length; i++)
+    {
+
+      cur_dividend->sign = snd->sign;
+      cur_dividend->length += 1;
+      unsigned int *realloc_digits = realloc (
+          cur_dividend->digits, cur_dividend->length * sizeof (unsigned int));
+      memmove (realloc_digits + 1, realloc_digits,
+               (cur_dividend->length - 1) * sizeof (unsigned int));
+
+      if (!realloc_digits)
+        {
+          free_bignum (res);
+          free_bignum (cur_dividend);
+          return NULL;
+        }
+      cur_dividend->digits = realloc_digits;
+
+      realloc_digits[0] = fst->digits[fst->length - 1 - i];
+
+      if (abs_is_greater_or_eq (cur_dividend, snd))
+        {
+          int cur_quotient = find_cur_quotient (cur_dividend, snd);
+          res->digits[res->length - 1 - i] = cur_quotient;
+
+          bignum_t *bignum_cur_quotient = init_bignum_from_int (cur_quotient);
+          bignum_t *tmp_mult = mult (snd, bignum_cur_quotient);
+          bignum_t *tmp_diff = diff (cur_dividend, tmp_mult);
+
+          free_bignum (cur_dividend);
+          cur_dividend = tmp_diff;
+          free_bignum (tmp_mult);
+          free_bignum (bignum_cur_quotient);
+        }
+    }
+  if (cur_dividend)
+    free_bignum (cur_dividend);
 
   cut_zeros (res);
 
   return res;
 }
 
-bignum_t *divide (bignum_t *fst, bignum_t *snd);
+bignum_t *
+mod (bignum_t *fst, bignum_t *snd)
+{
+
+  bignum_t *tmp_div = divide (fst, snd);
+  bignum_t *tmp_mult = mult (tmp_div, snd);
+  bignum_t *res = diff (fst, tmp_mult);
+
+  free_bignum (tmp_div);
+  free_bignum (tmp_mult);
+
+  if (res->sign == NEG)
+    {
+      bignum_t *tmp_add = add (res, snd);
+      free_bignum (res);
+      res = tmp_add;
+    }
+
+  return (res);
+}
