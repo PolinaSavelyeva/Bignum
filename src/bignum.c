@@ -11,6 +11,18 @@ free_bignum (bignum_t *bignum)
   free (bignum);
 }
 
+bignum_t *
+init_bignum (sign_t sign, unsigned int *digits, unsigned int length)
+{
+  bignum_t *bignum = malloc (sizeof (bignum_t));
+
+  bignum->sign = sign;
+  bignum->length = length;
+  bignum->digits = digits;
+
+  return bignum;
+}
+
 void *
 cut_zeros (bignum_t *bignum)
 {
@@ -51,11 +63,11 @@ cut_zeros (bignum_t *bignum)
 bignum_t *
 init_bignum_from_int (int num)
 {
-  bignum_t *bignum = malloc (sizeof (bignum_t));
-  bignum->sign = (num > 0) - (num < 0);
-  bignum->length = num ? (unsigned int)log10 (abs (num)) + 1 : 0;
-  unsigned int *digits = malloc (bignum->length * sizeof (unsigned int));
-  bignum->digits = digits;
+  int len = num ? (unsigned int)log10 (abs (num)) + 1 : 0;
+
+  bignum_t *bignum = init_bignum ((num > 0) - (num < 0),
+                                  malloc (len * sizeof (unsigned int)), len);
+
   num = abs (num);
 
   for (int i = 0; i < bignum->length; i++)
@@ -74,16 +86,4 @@ is_equal (bignum_t *bignum_fst, bignum_t *bignum_snd)
           && bignum_fst->length == bignum_snd->length
           && !memcmp (bignum_fst->digits, bignum_snd->digits,
                       bignum_fst->length * sizeof (unsigned int)));
-}
-
-bignum_t *
-init_bignum (sign_t sign, unsigned int *digits, unsigned int length)
-{
-  bignum_t *bignum = malloc (sizeof (bignum_t));
-
-  bignum->sign = sign;
-  bignum->length = length;
-  bignum->digits = digits;
-
-  return bignum;
 }
