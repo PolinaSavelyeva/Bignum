@@ -1,4 +1,4 @@
-# Bignum Library
+# Bignum
 
 Bignum is a C library for arbitrary-precision arithmetic operations on large integers.
 
