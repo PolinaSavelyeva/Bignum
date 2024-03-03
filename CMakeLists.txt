@@ -24,10 +24,14 @@ target_link_libraries(string_tests bignum)
 add_executable(math_tests tests/math_tests.c)
 target_link_libraries(math_tests bignum)
 
+add_executable(alg_tests tests/alg_tests.c)
+target_link_libraries(alg_tests bignum)
+
 enable_testing()
 
 add_test(NAME StringTests COMMAND string_tests)
 add_test(NAME MathTests COMMAND math_tests)
+add_test(NAME AlgTests COMMAND alg_tests)
 
 # Group files to format
 file(GLOB_RECURSE ALL_SOURCE_FILES *.c *.h)
@@ -44,4 +48,4 @@ add_custom_target (format
 
 # Memcheck
 add_custom_target(memcheck 
-    COMMAND valgrind --leak-check=full --verbose ./math_tests)
+    COMMAND valgrind --leak-check=full --verbose ./alg_tests)

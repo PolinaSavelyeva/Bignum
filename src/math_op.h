@@ -1,5 +1,4 @@
 #include "bignum.h"
-#include <stdbool.h>
 #ifndef MATH_OP_H
 #define MATH_OP_H
 

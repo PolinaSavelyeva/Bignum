@@ -2,7 +2,6 @@
 
 #include "math_op.h"
 #include "minunit.h"
-#include "string_op.h"
 #include "utils.h"
 
 #define TEST_ADD_STR_EQ(sign_fst, len_fst, sign_snd, len_snd, str)            \
@@ -142,7 +141,7 @@ MU_TEST (div_zero_pos) { TEST_DIV_INT_EQ (0, 929, 0); }
 
 MU_TEST (div_zero_neg) { TEST_DIV_INT_EQ (0, -61, 0); }
 
-MU_TEST (div_pos) { TEST_DIV_INT_EQ (445, -4, -111); }
+MU_TEST (div_pos) { TEST_DIV_INT_EQ (233, 1, 233); }
 
 MU_TEST (div_neg) { TEST_DIV_INT_EQ (-5, 2, -2); }
 

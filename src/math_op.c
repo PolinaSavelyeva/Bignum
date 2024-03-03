@@ -1,6 +1,5 @@
 #include "math_op.h"
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -45,11 +44,9 @@ add (bignum_t *fst, bignum_t *snd)
   if (!abs_is_greater_or_eq (fst, snd))
     return add (snd, fst);
 
-  bignum_t *res = malloc (sizeof (bignum_t));
-
-  res->length = fst->length + 1;
-  res->sign = fst->sign;
-  res->digits = calloc (res->length, sizeof (unsigned int));
+  bignum_t *res = init_bignum (fst->sign,
+                               calloc (fst->length + 1, sizeof (unsigned int)),
+                               fst->length + 1);
 
   int carry = 0;
 
@@ -74,12 +71,8 @@ add (bignum_t *fst, bignum_t *snd)
 bignum_t *
 diff (bignum_t *fst, bignum_t *snd)
 {
-  bignum_t *op_sign_snd = malloc (sizeof (bignum_t));
-
-  op_sign_snd->sign = snd->sign * NEG;
-  op_sign_snd->digits = snd->digits;
-  op_sign_snd->length = snd->length;
-
+  bignum_t *op_sign_snd
+      = init_bignum (snd->sign * NEG, snd->digits, snd->length);
   bignum_t *ans = add (fst, op_sign_snd);
   free (op_sign_snd);
 
@@ -89,12 +82,10 @@ diff (bignum_t *fst, bignum_t *snd)
 bignum_t *
 mult (bignum_t *fst, bignum_t *snd)
 {
-  bignum_t *res = malloc (sizeof (bignum_t));
-
-  res->length = fst->length + snd->length;
-  res->sign = fst->sign * snd->sign;
-  res->digits = calloc (res->length, sizeof (unsigned int));
-
+  bignum_t *res
+      = init_bignum (fst->sign * snd->sign,
+                     calloc (fst->length + snd->length, sizeof (unsigned int)),
+                     fst->length + snd->length);
   for (unsigned int i = 0; i < fst->length; i++)
     {
       unsigned int carry = 0;
@@ -144,19 +135,14 @@ divide (bignum_t *fst, bignum_t *snd)
   if (!snd->length && !snd->sign && !snd->digits)
     return NULL;
 
-  bignum_t *res = malloc (sizeof (bignum_t));
-  res->digits = calloc (fst->length, sizeof (unsigned int));
-  res->sign = fst->sign * snd->sign;
-  res->length = fst->length;
+  bignum_t *res
+      = init_bignum (fst->sign * snd->sign,
+                     calloc (fst->length, sizeof (unsigned int)), fst->length);
 
-  bignum_t *cur_dividend = malloc (sizeof (bignum_t));
-
-  cur_dividend->length = 0;
-  cur_dividend->digits = NULL;
+  bignum_t *cur_dividend = init_bignum (ZERO, NULL, 0);
 
   for (unsigned int i = 0; i < fst->length; i++)
     {
-
       cur_dividend->sign = snd->sign;
       cur_dividend->length += 1;
       unsigned int *realloc_digits = realloc (
