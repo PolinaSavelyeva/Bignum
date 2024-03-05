@@ -203,3 +203,15 @@ mod (bignum_t *fst, bignum_t *snd)
 
   return (res);
 }
+
+bignum_t *
+math_div (bignum_t *fst, bignum_t *snd)
+{
+  bignum_t *tmp_mod = mod (fst, snd);
+  bignum_t *tmp_diff = diff (fst, tmp_mod);
+  free_bignum (tmp_mod);
+  bignum_t *res = divide (tmp_diff, snd);
+  free_bignum (tmp_diff);
+
+  return res;
+}
