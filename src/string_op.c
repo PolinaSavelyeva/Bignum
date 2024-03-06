@@ -31,7 +31,12 @@ bignum_t *to_bignum(char *str) {
 
   bignum->length = strlen(str) - fst_digit_i - 1 + bignum->sign * bignum->sign;
 
-  if ((bignum->length && str[1] != '0') || (!bignum->sign && !bignum->length)) {
+  if (!bignum->sign && !bignum->length) {
+    bignum->digits = NULL;
+    return bignum;
+  }
+
+  if (bignum->length && str[1] != '0') {
     bignum->digits = malloc(bignum->length * sizeof(unsigned int));
 
     for (unsigned int i = 0; i < bignum->length; i++) {
