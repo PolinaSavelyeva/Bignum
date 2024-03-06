@@ -44,7 +44,7 @@ endforeach ()
 
 # Formatter
 add_custom_target (format
-     COMMAND clang-format -style=GNU -i ${ALL_SOURCE_FILES})
+     COMMAND clang-format -style=Google -i ${ALL_SOURCE_FILES})
 
 # Memcheck
 add_custom_target(memcheck 
