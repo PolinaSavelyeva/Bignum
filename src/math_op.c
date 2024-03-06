@@ -44,7 +44,7 @@ bignum_t *add(bignum_t *fst, bignum_t *snd) {
   }
 
   res->digits[res->length - 1] = res->sign * carry;
-  if (!normalize_bignum(res)) return NULL;
+  normalize_bignum(res);
 
   return res;
 }
@@ -70,8 +70,7 @@ bignum_t *mult(bignum_t *fst, bignum_t *snd) {
     }
     res->digits[i + snd->length] = carry;
   }
-
-  if (!normalize_bignum(res)) return NULL;
+  normalize_bignum(res);
 
   return res;
 }

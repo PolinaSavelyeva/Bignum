@@ -19,7 +19,7 @@ bignum_t *init_bignum(sign_t sign, unsigned int length) {
   return bignum;
 }
 
-void *normalize_bignum(bignum_t *bignum) {
+void normalize_bignum(bignum_t *bignum) {
   unsigned int len_to_cut = 0;
 
   for (int i = bignum->length - 1; i >= 0; i--) {
@@ -35,9 +35,7 @@ void *normalize_bignum(bignum_t *bignum) {
       void *realloc_digits =
           realloc(bignum->digits, bignum->length * sizeof(unsigned int));
 
-      // Checks for potential memory leaks when realloc returns NULL
-      if (!realloc_digits) free(bignum->digits);
-      bignum->digits = realloc_digits;
+      if (realloc_digits) bignum->digits = realloc_digits;
     } else {
       free(bignum->digits);
 
@@ -45,7 +43,6 @@ void *normalize_bignum(bignum_t *bignum) {
       bignum->sign = ZERO;
     }
   }
-  return bignum;
 }
 
 bignum_t *init_bignum_from_int(int num) {
