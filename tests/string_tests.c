@@ -4,11 +4,11 @@
 #include "string_op.h"
 #include "utils.h"
 
-#define TEST_BIGNUM_EQ(str, val, len)                \
-  bignum_t *bignum_fst = init_bignum_mods(val, len); \
-  bignum_t *bignum_snd = to_bignum(str);             \
-  mu_check(is_equal(bignum_fst, bignum_snd));        \
-  free_bignum(bignum_fst);                           \
+#define TEST_BIGNUM_EQ(str, val, len)                 \
+  bignum_t *bignum_fst = init_bignum_mods(val, len);  \
+  bignum_t *bignum_snd = to_bignum(str);              \
+  mu_check(bignums_is_equal(bignum_fst, bignum_snd)); \
+  free_bignum(bignum_fst);                            \
   free_bignum(bignum_snd);
 
 #define TEST_BIGNUM_FAIL(str, val, len) mu_check(NULL == to_bignum(str))
@@ -39,7 +39,7 @@ MU_TEST(to_bignum_one_int) {
   bignum_t *bignum_fst = init_bignum_from_int(1);
   bignum_t *bignum_snd = to_bignum("1");
 
-  mu_check(is_equal(bignum_fst, bignum_snd));
+  mu_check(bignums_is_equal(bignum_fst, bignum_snd));
   free_bignum(bignum_fst);
   free_bignum(bignum_snd);
 }

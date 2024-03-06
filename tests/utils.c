@@ -8,8 +8,7 @@
 #include "string_op.h"
 
 bignum_t *init_bignum_mods(sign_t sign, unsigned int length) {
-  bignum_t *bignum =
-      init_bignum(sign, malloc(length * sizeof(unsigned int)), length);
+  bignum_t *bignum = init_bignum(sign, length);
 
   for (unsigned int i = 0; i < length; i++)
     bignum->digits[length - i - 1] = (i + 1) % 10;
@@ -25,7 +24,7 @@ bool test_op_res_eq_str(bin_op op, sign_t sign_fst, unsigned int length_fst,
   bignum_t *expect = to_bignum(ans_str);
   bignum_t *actual = op(fst, snd);
 
-  bool res = is_equal(actual, expect);
+  bool res = bignums_is_equal(actual, expect);
 
   free_bignum(fst);
   free_bignum(snd);
@@ -41,7 +40,7 @@ bool test_op_res_eq_int(bin_op op, int i_fst, int i_snd, int i_ans) {
   bignum_t *expect = init_bignum_from_int(i_ans);
   bignum_t *actual = op(fst, snd);
 
-  bool res = is_equal(actual, expect);
+  bool res = bignums_is_equal(actual, expect);
 
   free_bignum(fst);
   free_bignum(snd);
@@ -52,9 +51,7 @@ bool test_op_res_eq_int(bin_op op, int i_fst, int i_snd, int i_ans) {
 }
 
 static bignum_t *copy(bignum_t *src) {
-  bignum_t *dest =
-      init_bignum(src->sign * src->sign,
-                  malloc(src->length * sizeof(unsigned int)), src->length);
+  bignum_t *dest = init_bignum(src->sign * src->sign, src->length);
   memcpy(dest->digits, src->digits, dest->length * sizeof(unsigned int));
 
   return dest;

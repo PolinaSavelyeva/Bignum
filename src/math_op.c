@@ -30,9 +30,7 @@ static int math_mod_ten(int num) {
 bignum_t *add(bignum_t *fst, bignum_t *snd) {
   if (!abs_is_greater_or_eq(fst, snd)) return add(snd, fst);
 
-  bignum_t *res =
-      init_bignum(fst->sign, calloc(fst->length + 1, sizeof(unsigned int)),
-                  fst->length + 1);
+  bignum_t *res = init_bignum(fst->sign, fst->length + 1);
 
   int carry = 0;
 
@@ -46,14 +44,14 @@ bignum_t *add(bignum_t *fst, bignum_t *snd) {
   }
 
   res->digits[res->length - 1] = res->sign * carry;
-  if (!cut_zeros(res)) return NULL;
+  if (!normalize_bignum(res)) return NULL;
 
   return res;
 }
 
 bignum_t *diff(bignum_t *fst, bignum_t *snd) {
   bignum_t *op_sign_snd =
-      init_bignum(snd->sign * NEG, snd->digits, snd->length);
+      init_bignum_with_digits(snd->sign * NEG, snd->digits, snd->length);
   bignum_t *ans = add(fst, op_sign_snd);
   free(op_sign_snd);
 
@@ -61,10 +59,7 @@ bignum_t *diff(bignum_t *fst, bignum_t *snd) {
 }
 
 bignum_t *mult(bignum_t *fst, bignum_t *snd) {
-  bignum_t *res =
-      init_bignum(fst->sign * snd->sign,
-                  calloc(fst->length + snd->length, sizeof(unsigned int)),
-                  fst->length + snd->length);
+  bignum_t *res = init_bignum(fst->sign * snd->sign, fst->length + snd->length);
   for (unsigned int i = 0; i < fst->length; i++) {
     unsigned int carry = 0;
     for (unsigned int j = 0; j < snd->length; j++) {
@@ -76,7 +71,7 @@ bignum_t *mult(bignum_t *fst, bignum_t *snd) {
     res->digits[i + snd->length] = carry;
   }
 
-  if (!cut_zeros(res)) return NULL;
+  if (!normalize_bignum(res)) return NULL;
 
   return res;
 }
@@ -102,11 +97,9 @@ static int find_cur_quotient(bignum_t *cur_dividend, bignum_t *snd) {
 bignum_t *divide(bignum_t *fst, bignum_t *snd) {
   if (!snd->length && !snd->sign && !snd->digits) return NULL;
 
-  bignum_t *res =
-      init_bignum(fst->sign * snd->sign,
-                  calloc(fst->length, sizeof(unsigned int)), fst->length);
+  bignum_t *res = init_bignum(fst->sign * snd->sign, fst->length);
 
-  bignum_t *cur_dividend = init_bignum(ZERO, NULL, 0);
+  bignum_t *cur_dividend = init_bignum_with_digits(ZERO, NULL, 0);
 
   for (unsigned int i = 0; i < fst->length; i++) {
     cur_dividend->sign = snd->sign;
@@ -141,7 +134,7 @@ bignum_t *divide(bignum_t *fst, bignum_t *snd) {
   }
   if (cur_dividend) free_bignum(cur_dividend);
 
-  cut_zeros(res);
+  normalize_bignum(res);
 
   return res;
 }

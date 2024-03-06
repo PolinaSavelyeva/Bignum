@@ -11,7 +11,9 @@ typedef struct {
 } bignum_t;
 
 void free_bignum(bignum_t *bignum);
-void *cut_zeros(bignum_t *bignum);
-bignum_t *init_bignum(sign_t sign, unsigned int *digits, unsigned int length);
+void *normalize_bignum(bignum_t *bignum);
+bignum_t *init_bignum(sign_t sign, unsigned int length);
 bignum_t *init_bignum_from_int(int num);
-bool is_equal(bignum_t *fst, bignum_t *snd);
+bignum_t *init_bignum_with_digits(sign_t sign, unsigned int *digits,
+                                  unsigned int length);
+bool bignums_is_equal(bignum_t *fst, bignum_t *snd);
