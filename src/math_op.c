@@ -27,8 +27,8 @@ static int math_mod_ten(int num) {
   return mod < 0 ? mod + 10 : mod;
 }
 
-bignum_t *add(bignum_t *fst, bignum_t *snd) {
-  if (!abs_is_greater_or_eq(fst, snd)) return add(snd, fst);
+bignum_t *bignum_add(bignum_t *fst, bignum_t *snd) {
+  if (!abs_is_greater_or_eq(fst, snd)) return bignum_add(snd, fst);
 
   bignum_t *res = init_bignum(fst->sign, fst->length + 1);
 
@@ -49,16 +49,16 @@ bignum_t *add(bignum_t *fst, bignum_t *snd) {
   return res;
 }
 
-bignum_t *diff(bignum_t *fst, bignum_t *snd) {
+bignum_t *bignum_diff(bignum_t *fst, bignum_t *snd) {
   bignum_t *op_sign_snd =
       init_bignum_with_digits(snd->sign * NEG, snd->digits, snd->length);
-  bignum_t *ans = add(fst, op_sign_snd);
+  bignum_t *ans = bignum_add(fst, op_sign_snd);
   free(op_sign_snd);
 
   return ans;
 }
 
-bignum_t *mult(bignum_t *fst, bignum_t *snd) {
+bignum_t *bignum_mult(bignum_t *fst, bignum_t *snd) {
   bignum_t *res = init_bignum(fst->sign * snd->sign, fst->length + snd->length);
   for (unsigned int i = 0; i < fst->length; i++) {
     unsigned int carry = 0;
@@ -81,7 +81,7 @@ static int find_cur_quotient(bignum_t *cur_dividend, bignum_t *snd) {
 
   for (; i_quotient < 10; i_quotient++) {
     bignum_quotient = init_bignum_from_int(i_quotient);
-    tmp_mult = mult(snd, bignum_quotient);
+    tmp_mult = bignum_mult(snd, bignum_quotient);
 
     bool is_break = !abs_is_greater_or_eq(cur_dividend, tmp_mult);
 
@@ -93,7 +93,7 @@ static int find_cur_quotient(bignum_t *cur_dividend, bignum_t *snd) {
   return i_quotient - 1;
 }
 
-bignum_t *divide(bignum_t *fst, bignum_t *snd) {
+static bignum_t *bignum_abs_div(bignum_t *fst, bignum_t *snd) {
   if (!snd->length && !snd->sign && !snd->digits) return NULL;
 
   bignum_t *res = init_bignum(fst->sign * snd->sign, fst->length);
@@ -122,8 +122,8 @@ bignum_t *divide(bignum_t *fst, bignum_t *snd) {
       res->digits[res->length - 1 - i] = cur_quotient;
 
       bignum_t *bignum_cur_quotient = init_bignum_from_int(cur_quotient);
-      bignum_t *tmp_mult = mult(snd, bignum_cur_quotient);
-      bignum_t *tmp_diff = diff(cur_dividend, tmp_mult);
+      bignum_t *tmp_mult = bignum_mult(snd, bignum_cur_quotient);
+      bignum_t *tmp_diff = bignum_diff(cur_dividend, tmp_mult);
 
       free_bignum(cur_dividend);
       cur_dividend = tmp_diff;
@@ -138,16 +138,16 @@ bignum_t *divide(bignum_t *fst, bignum_t *snd) {
   return res;
 }
 
-bignum_t *mod(bignum_t *fst, bignum_t *snd) {
-  bignum_t *tmp_div = divide(fst, snd);
-  bignum_t *tmp_mult = mult(tmp_div, snd);
-  bignum_t *res = diff(fst, tmp_mult);
+bignum_t *bignum_mod(bignum_t *fst, bignum_t *snd) {
+  bignum_t *tmp_div = bignum_abs_div(fst, snd);
+  bignum_t *tmp_mult = bignum_mult(tmp_div, snd);
+  bignum_t *res = bignum_diff(fst, tmp_mult);
 
   free_bignum(tmp_div);
   free_bignum(tmp_mult);
 
   if (res->sign == NEG) {
-    bignum_t *tmp_add = add(res, snd);
+    bignum_t *tmp_add = bignum_add(res, snd);
     free_bignum(res);
     res = tmp_add;
   }
@@ -155,11 +155,11 @@ bignum_t *mod(bignum_t *fst, bignum_t *snd) {
   return (res);
 }
 
-bignum_t *math_div(bignum_t *fst, bignum_t *snd) {
-  bignum_t *tmp_mod = mod(fst, snd);
-  bignum_t *tmp_diff = diff(fst, tmp_mod);
+bignum_t *bignum_div(bignum_t *fst, bignum_t *snd) {
+  bignum_t *tmp_mod = bignum_mod(fst, snd);
+  bignum_t *tmp_diff = bignum_diff(fst, tmp_mod);
   free_bignum(tmp_mod);
-  bignum_t *res = divide(tmp_diff, snd);
+  bignum_t *res = bignum_abs_div(tmp_diff, snd);
   free_bignum(tmp_diff);
 
   return res;

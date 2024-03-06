@@ -48,4 +48,4 @@ add_custom_target (format
 
 # Memcheck
 add_custom_target(memcheck 
-    COMMAND valgrind --leak-check=full --verbose ./alg_tests)
+    COMMAND valgrind --leak-check=full ./alg_tests)

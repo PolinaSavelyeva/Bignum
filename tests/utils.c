@@ -65,7 +65,7 @@ bignum_t *euclidean_alg(bignum_t *fst, bignum_t *snd) {
 
   bignum_t *mod_res;
   do {
-    mod_res = mod(tmp_fst, tmp_snd);
+    mod_res = bignum_mod(tmp_fst, tmp_snd);
     free_bignum(tmp_fst);
     tmp_fst = tmp_snd;
     tmp_snd = mod_res;

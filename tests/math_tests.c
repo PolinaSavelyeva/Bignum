@@ -4,29 +4,28 @@
 #include "minunit.h"
 #include "utils.h"
 
-#define TEST_ADD_STR_EQ(sign_fst, len_fst, sign_snd, len_snd, str) \
-  mu_check(test_op_res_eq_str(add, sign_fst, len_fst, sign_snd, len_snd, str))
+#define TEST_ADD_STR_EQ(sign_fst, len_fst, sign_snd, len_snd, str)     \
+  mu_check(test_op_res_eq_str(bignum_add, sign_fst, len_fst, sign_snd, \
+                              len_snd, str))
 
 #define TEST_ADD_INTS_EQ(i_fst, i_snd, i_ans) \
-  mu_check(test_op_res_eq_int(add, i_fst, i_snd, i_ans))
+  mu_check(test_op_res_eq_int(bignum_add, i_fst, i_snd, i_ans))
 
-#define TEST_DIFF_STR_EQ(sign_fst, len_fst, sign_snd, len_snd, str) \
-  mu_check(test_op_res_eq_str(diff, sign_fst, len_fst, sign_snd, len_snd, str))
+#define TEST_DIFF_STR_EQ(sign_fst, len_fst, sign_snd, len_snd, str)     \
+  mu_check(test_op_res_eq_str(bignum_diff, sign_fst, len_fst, sign_snd, \
+                              len_snd, str))
 
 #define TEST_DIFF_INT_EQ(i_fst, i_snd, i_ans) \
-  mu_check(test_op_res_eq_int(diff, i_fst, i_snd, i_ans))
+  mu_check(test_op_res_eq_int(bignum_diff, i_fst, i_snd, i_ans))
 
 #define TEST_MULT_INT_EQ(i_fst, i_snd, i_ans) \
-  mu_check(test_op_res_eq_int(mult, i_fst, i_snd, i_ans))
+  mu_check(test_op_res_eq_int(bignum_mult, i_fst, i_snd, i_ans))
 
 #define TEST_DIV_INT_EQ(i_fst, i_snd, i_ans) \
-  mu_check(test_op_res_eq_int(divide, i_fst, i_snd, i_ans))
+  mu_check(test_op_res_eq_int(bignum_div, i_fst, i_snd, i_ans))
 
 #define TEST_MOD_INT_EQ(i_fst, i_snd, i_ans) \
-  mu_check(test_op_res_eq_int(mod, i_fst, i_snd, i_ans))
-
-#define TEST_MATH_DIV_INT_EQ(i_fst, i_snd, i_ans) \
-  mu_check(test_op_res_eq_int(math_div, i_fst, i_snd, i_ans))
+  mu_check(test_op_res_eq_int(bignum_mod, i_fst, i_snd, i_ans))
 
 MU_TEST(add_eq_neg) { TEST_ADD_STR_EQ(NEG, 5, NEG, 5, "-24690"); }
 
@@ -136,11 +135,11 @@ MU_TEST(div_zero_neg) { TEST_DIV_INT_EQ(0, -61, 0); }
 
 MU_TEST(div_pos) { TEST_DIV_INT_EQ(233, 1, 233); }
 
-MU_TEST(div_neg) { TEST_DIV_INT_EQ(-5, 2, -2); }
+MU_TEST(div_neg) { TEST_DIV_INT_EQ(-5, 2, -3); }
 
 MU_TEST(div_special) { TEST_DIV_INT_EQ(4100, 588, 6); }
 
-MU_TEST(div_res_zero) { TEST_DIV_INT_EQ(-7, 8, 0); }
+MU_TEST(div_res_zero) { TEST_DIV_INT_EQ(-7, 8, -1); }
 
 MU_TEST_SUITE(div_tests) {
   MU_RUN_TEST(div_eq_neg);
@@ -182,46 +181,12 @@ MU_TEST_SUITE(mod_tests) {
   MU_RUN_TEST(mod_special);
 }
 
-MU_TEST(math_div_eq_neg) { TEST_MATH_DIV_INT_EQ(-5, -5, 1); }
-
-MU_TEST(math_div_eq_pos) { TEST_MATH_DIV_INT_EQ(178, 178, 1); }
-
-MU_TEST(math_div_pos_one) { TEST_MATH_DIV_INT_EQ(219283, 1, 219283); }
-
-MU_TEST(math_div_neg_one) { TEST_MATH_DIV_INT_EQ(-1281872, 1, -1281872); }
-
-MU_TEST(math_div_zero_pos) { TEST_MATH_DIV_INT_EQ(0, 929, 0); }
-
-MU_TEST(math_div_zero_neg) { TEST_MATH_DIV_INT_EQ(0, -61, 0); }
-
-MU_TEST(math_div_pos) { TEST_MATH_DIV_INT_EQ(233, 1, 233); }
-
-MU_TEST(math_div_neg) { TEST_MATH_DIV_INT_EQ(-5, 2, -3); }
-
-MU_TEST(math_div_special) { TEST_MATH_DIV_INT_EQ(4100, 588, 6); }
-
-MU_TEST(math_div_res_zero) { TEST_MATH_DIV_INT_EQ(-7, 8, -1); }
-
-MU_TEST_SUITE(math_div_tests) {
-  MU_RUN_TEST(math_div_eq_neg);
-  MU_RUN_TEST(math_div_eq_pos);
-  MU_RUN_TEST(math_div_pos_one);
-  MU_RUN_TEST(math_div_neg_one);
-  MU_RUN_TEST(math_div_zero_pos);
-  MU_RUN_TEST(math_div_zero_neg);
-  MU_RUN_TEST(math_div_pos);
-  MU_RUN_TEST(math_div_neg);
-  MU_RUN_TEST(math_div_special);
-  MU_RUN_TEST(math_div_res_zero);
-}
-
 int main() {
   MU_RUN_SUITE(add_tests);
   MU_RUN_SUITE(diff_tests);
   MU_RUN_SUITE(mult_tests);
   MU_RUN_SUITE(div_tests);
   MU_RUN_SUITE(mod_tests);
-  MU_RUN_SUITE(math_div_tests);
   MU_REPORT();
   return MU_EXIT_CODE;
 }

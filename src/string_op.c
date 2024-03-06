@@ -20,7 +20,7 @@ static int parse_fst_char(char fst_ch, sign_t *sign,
 }
 
 bignum_t *to_bignum(char *str) {
-  bignum_t *bignum = malloc(sizeof(bignum_t));
+  bignum_t *bignum = malloc(sizeof(*bignum));
   unsigned int fst_digit_i = 0;
   int exit_code = parse_fst_char(str[0], &(bignum->sign), &fst_digit_i);
 
