@@ -1,0 +1,17 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest 
+    steps:
+      - uses: actions/checkout@v2
+      - name: get-cmake
+        uses: lukka/get-cmake@v3.24.3
+      - run: mkdir build
+      - run: |
+          cd build
+          cmake ..
+          make
+          make test
