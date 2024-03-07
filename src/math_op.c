@@ -51,7 +51,7 @@ bignum_t *bignum_add(bignum_t *fst, bignum_t *snd) {
 
 bignum_t *bignum_diff(bignum_t *fst, bignum_t *snd) {
   bignum_t *op_sign_snd =
-      init_bignum_with_digits(snd->sign * NEG, snd->digits, snd->length);
+      init_bignum_with_digits(-snd->sign, snd->digits, snd->length);
   bignum_t *ans = bignum_add(fst, op_sign_snd);
   free(op_sign_snd);
 
