@@ -4,13 +4,13 @@ Bignum is a C library for arbitrary-precision arithmetic operations on large int
 
 ## Main Features
 
-- `add`: Performs addition of two big ints.
-- `diff`: Calculates the difference between two big ints.
-- `mult`: Multiplies two big ints.
-- `div`: Divides one big int by another.
-- `mod`: Calculates the modulus of one big int by another.
-- `to_bignum`: Converts a string representation of an int to a big int.
-- `to_str`: Converts a big int to its string representation.
+- `bignum_add`: Performs addition of two big ints.
+- `bignum_diff`: Calculates the difference between two big ints.
+- `bignum_mult`: Multiplies two big ints.
+- `bignum_div`: Divides one big int by another.
+- `bignum_mod`: Calculates the modulus of one big int by another.
+- `str_to_bignum`: Converts a string representation of an int to a big int.
+- `bignum_to_str`: Converts a big int to its string representation.
 
 ## Building
 
