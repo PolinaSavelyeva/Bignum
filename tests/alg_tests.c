@@ -1,7 +1,8 @@
 #include <stdlib.h>
 
+#include "euclidean_alg.h"
+#include "helper.h"
 #include "minunit.h"
-#include "utils.h"
 
 #define TEST_EUCLID_ALG_EQ(i_fst, i_snd, i_ans) \
   mu_check(test_op_res_eq_int(euclidean_alg, i_fst, i_snd, i_ans))

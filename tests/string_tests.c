@@ -1,17 +1,17 @@
 #include <stdlib.h>
 
+#include "helper.h"
 #include "minunit.h"
 #include "string_op.h"
-#include "utils.h"
 
-#define TEST_BIGNUM_EQ(str, val, len)                 \
-  bignum_t *bignum_fst = init_bignum_mods(val, len);  \
-  bignum_t *bignum_snd = to_bignum(str);              \
-  mu_check(bignums_is_equal(bignum_fst, bignum_snd)); \
-  free_bignum(bignum_fst);                            \
+#define TEST_BIGNUM_EQ(str, val, len)                  \
+  bignum_t *bignum_fst = init_bignum_mods(val, len);   \
+  bignum_t *bignum_snd = str_to_bignum(str);           \
+  mu_check(bignums_are_equal(bignum_fst, bignum_snd)); \
+  free_bignum(bignum_fst);                             \
   free_bignum(bignum_snd);
 
-#define TEST_BIGNUM_FAIL(str, val, len) mu_check(NULL == to_bignum(str))
+#define TEST_BIGNUM_FAIL(str, val, len) mu_check(NULL == str_to_bignum(str))
 
 MU_TEST(to_bignum_small_neg) { TEST_BIGNUM_EQ("-123", NEG, 3); }
 
@@ -37,17 +37,17 @@ MU_TEST(to_bignum_one) { TEST_BIGNUM_EQ("1", POS, 1); }
 
 MU_TEST(to_bignum_one_int) {
   bignum_t *bignum_fst = init_bignum_from_int(1);
-  bignum_t *bignum_snd = to_bignum("1");
+  bignum_t *bignum_snd = str_to_bignum("1");
 
-  mu_check(bignums_is_equal(bignum_fst, bignum_snd));
+  mu_check(bignums_are_equal(bignum_fst, bignum_snd));
   free_bignum(bignum_fst);
   free_bignum(bignum_snd);
 }
 
-MU_TEST(to_bignum_non_digit) { mu_check(to_bignum("+abc") == NULL); }
+MU_TEST(to_bignum_non_digit) { mu_check(str_to_bignum("+abc") == NULL); }
 
 MU_TEST(to_bignum_one_alpha) {
-  mu_check(to_bignum("98189819283h9181928") == NULL);
+  mu_check(str_to_bignum("98189819283h9181928") == NULL);
 }
 
 MU_TEST_SUITE(to_bignum_tests) {
@@ -69,12 +69,12 @@ MU_TEST_SUITE(to_bignum_tests) {
 
 #define TEST_STR_EQ(str_fst, val, len)           \
   bignum_t *bignum = init_bignum_mods(val, len); \
-  char *str_snd = to_str(bignum);                \
+  char *str_snd = bignum_to_str(bignum);         \
   mu_assert_string_eq(str_fst, str_snd);         \
   free_bignum(bignum);                           \
   free(str_snd)
 
-#define TEST_STR_FAIL(str, val, len) mu_check(NULL == to_bignum(str))
+#define TEST_STR_FAIL(str, val, len) mu_check(NULL == str_to_bignum(str))
 
 MU_TEST(to_str_small_negative) { TEST_STR_EQ("-123", NEG, 3); }
 

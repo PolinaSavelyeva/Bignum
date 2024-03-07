@@ -1,8 +1,8 @@
 #include <stdlib.h>
 
+#include "helper.h"
 #include "math_op.h"
 #include "minunit.h"
-#include "utils.h"
 
 #define TEST_ADD_STR_EQ(sign_fst, len_fst, sign_snd, len_snd, str)     \
   mu_check(test_op_res_eq_str(bignum_add, sign_fst, len_fst, sign_snd, \

@@ -7,7 +7,6 @@ set(SOURCE_LIB
     src/bignum.c
     src/math_op.c
     src/string_op.c
-    tests/utils.c
 )
 
 add_library(bignum STATIC ${SOURCE_LIB})	
@@ -18,14 +17,19 @@ target_link_libraries(bignum m)
 target_compile_options(bignum PRIVATE -Wall -g)
 
 # Executable tests
-add_executable(string_tests tests/string_tests.c)
+add_executable(string_tests tests/string_tests.c tests/helper.c)
 target_link_libraries(string_tests bignum)
 
-add_executable(math_tests tests/math_tests.c)
+add_executable(math_tests tests/math_tests.c tests/helper.c)
 target_link_libraries(math_tests bignum)
 
-add_executable(alg_tests tests/alg_tests.c)
+add_executable(alg_tests
+ examples/euclidean_alg.c
+ tests/alg_tests.c 
+ tests/helper.c )
 target_link_libraries(alg_tests bignum)
+
+target_include_directories(alg_tests PUBLIC examples)
 
 enable_testing()
 
@@ -48,4 +52,4 @@ add_custom_target (format
 
 # Memcheck
 add_custom_target(memcheck 
-    COMMAND valgrind --leak-check=full ./alg_tests)
+    COMMAND valgrind --leak-check=full ./math_tests)

@@ -2,5 +2,5 @@
 
 #include "bignum.h"
 
-bignum_t *to_bignum(char *str);
-char *to_str(bignum_t *bignum);
+bignum_t *str_to_bignum(char *str);
+char *bignum_to_str(bignum_t *bignum);

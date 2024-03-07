@@ -8,4 +8,3 @@ bool test_op_res_eq_str(bin_op op, sign_t sign_fst, unsigned int length_fst,
                         sign_t sign_snd, unsigned int length_snd,
                         char *ans_str);
 bool test_op_res_eq_int(bin_op op, int i_fst, int i_snd, int i_ans);
-bignum_t *euclidean_alg(bignum_t *fst, bignum_t *snd);

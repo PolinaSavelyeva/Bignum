@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-bool abs_is_greater_or_eq(bignum_t *fst, bignum_t *snd) {
+bool bignum_cmp_abs(bignum_t *fst, bignum_t *snd) {
   if (fst->length == snd->length) {
     for (unsigned int i = 0; i < fst->length; i++) {
       if (fst->digits[fst->length - 1 - i] == snd->digits[fst->length - 1 - i])
@@ -28,7 +28,7 @@ static int math_mod_ten(int num) {
 }
 
 bignum_t *bignum_add(bignum_t *fst, bignum_t *snd) {
-  if (!abs_is_greater_or_eq(fst, snd)) return bignum_add(snd, fst);
+  if (!bignum_cmp_abs(fst, snd)) return bignum_add(snd, fst);
 
   bignum_t *res = init_bignum(fst->sign, fst->length + 1);
 
@@ -83,7 +83,7 @@ static int find_cur_quotient(bignum_t *cur_dividend, bignum_t *snd) {
     bignum_quotient = init_bignum_from_int(i_quotient);
     tmp_mult = bignum_mult(snd, bignum_quotient);
 
-    bool is_break = !abs_is_greater_or_eq(cur_dividend, tmp_mult);
+    bool is_break = !bignum_cmp_abs(cur_dividend, tmp_mult);
 
     free_bignum(tmp_mult);
     free_bignum(bignum_quotient);
@@ -117,7 +117,7 @@ static bignum_t *bignum_abs_div(bignum_t *fst, bignum_t *snd) {
 
     realloc_digits[0] = fst->digits[fst->length - 1 - i];
 
-    if (abs_is_greater_or_eq(cur_dividend, snd)) {
+    if (bignum_cmp_abs(cur_dividend, snd)) {
       int cur_quotient = find_cur_quotient(cur_dividend, snd);
       res->digits[res->length - 1 - i] = cur_quotient;
 

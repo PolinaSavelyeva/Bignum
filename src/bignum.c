@@ -71,9 +71,16 @@ bignum_t *init_bignum_with_digits(sign_t sign, unsigned int *digits,
   return bignum;
 }
 
-bool bignums_is_equal(bignum_t *bignum_fst, bignum_t *bignum_snd) {
+bool bignums_are_equal(bignum_t *bignum_fst, bignum_t *bignum_snd) {
   return (bignum_fst->sign == bignum_snd->sign &&
           bignum_fst->length == bignum_snd->length &&
           !memcmp(bignum_fst->digits, bignum_snd->digits,
                   bignum_fst->length * sizeof(unsigned int)));
+}
+
+bignum_t *bignum_copy(bignum_t *src) {
+  bignum_t *dest = init_bignum(src->sign * src->sign, src->length);
+  memcpy(dest->digits, src->digits, dest->length * sizeof(unsigned int));
+
+  return dest;
 }
